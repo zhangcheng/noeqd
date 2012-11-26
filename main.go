@@ -22,11 +22,11 @@ var (
 )
 
 const (
-	workerIdBits       = uint64(5)
-	datacenterIdBits   = uint64(5)
+	workerIdBits       = uint64(2)
+	datacenterIdBits   = uint64(3)
 	maxWorkerId        = int64(-1) ^ (int64(-1) << workerIdBits)
 	maxDatacenterId    = int64(-1) ^ (int64(-1) << datacenterIdBits)
-	sequenceBits       = uint64(12)
+	sequenceBits       = uint64(8)
 	workerIdShift      = sequenceBits
 	datacenterIdShift  = sequenceBits + workerIdBits
 	timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits
@@ -42,6 +42,7 @@ var (
 	did   = flag.Int64("d", 0, "datacenter id")
 	laddr = flag.String("l", "0.0.0.0:4444", "the address to listen on")
 	lts   = flag.Int64("t", -1, "the last timestamp in milliseconds")
+	myepoch = flag.Int64("p", int64(1353933190779), "my epoch")
 )
 
 var (
@@ -51,6 +52,7 @@ var (
 
 func main() {
 	parseFlags()
+	log.Println(maxWorkerId, maxDatacenterId, timestampLeftShift, *wid, *did, *lts, *myepoch)
 	acceptAndServe(mustListen())
 }
 
@@ -140,7 +142,7 @@ func serve(r io.Reader, w io.Writer) error {
 }
 
 func milliseconds() int64 {
-	return time.Now().UnixNano() / 1e6
+	return time.Now().UTC().UnixNano() / 1e6
 }
 
 func nextId() (int64, error) {
@@ -166,7 +168,7 @@ func nextId() (int64, error) {
 
 	*lts = ts
 
-	id := ((ts - twepoch) << timestampLeftShift) |
+	id := ((ts - *myepoch) << timestampLeftShift) |
 		(*did << datacenterIdShift) |
 		(*wid << workerIdShift) |
 		seq
