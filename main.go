@@ -22,11 +22,11 @@ var (
 )
 
 const (
-	workerIdBits       = uint64(2)
-	datacenterIdBits   = uint64(3)
+	workerIdBits       = uint64(1)
+	datacenterIdBits   = uint64(1)
 	maxWorkerId        = int64(-1) ^ (int64(-1) << workerIdBits)
 	maxDatacenterId    = int64(-1) ^ (int64(-1) << datacenterIdBits)
-	sequenceBits       = uint64(8)
+	sequenceBits       = uint64(1)
 	workerIdShift      = sequenceBits
 	datacenterIdShift  = sequenceBits + workerIdBits
 	timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits
