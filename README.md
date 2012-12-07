@@ -2,6 +2,13 @@
 
 Based on [snowflake][].
 
+## Modification purpose
+
+To start with smallest id as possible, so we can squeeze more ids within JavaScript's number range.
+
+* configured machine id - 2 bits
+* sequence number - 1 bits
+
 ## Motivation
 
 GUIDs (Globally Unique IDs) are useful for a number a obvious reasons:
